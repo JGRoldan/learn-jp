@@ -286,8 +286,9 @@ followed by `[reading]`) and never mixes the two.
   kanji run gets its own `<ruby>`:
   `<ruby>父<rt>ちち</rt></ruby><ruby>親<rt>おや</rt></ruby>`.
 - `lectura_ejemplos` is parsed the same way, sentence by sentence.
-- The `palabra` column stays the plain word and is only used for
-  search and fallbacks.
+- The `palabra` column stays the plain word and is used for the
+  collapsed list, search and fallbacks. Furigana and readings are
+  rendered only when the entry is expanded.
 
 ### Parsing Rules
 
@@ -362,15 +363,20 @@ contain parallel lists in a single cell, separated by `|`.
 
 Display vocabulary as a vertical list, one entry below the other.
 
-**Collapsed state (default):** only the word is visible
-(`palabra`, as kanji or as the full word), with furigana when furigana
-is enabled. Nothing else is shown.
+**Collapsed state (default):** only the plain word is visible
+(`palabra`, as kanji or as the full word), without furigana or
+readings. Nothing else is shown.
 
 **Expanded state:** each entry can be expanded to reveal:
+- The same word with its furigana or readings when applicable.
 - Meaning (`significado`), with furigana when applicable.
 - Examples (`ejemplos`), one per line, with furigana.
 - Category name.
 - Learned status (read-only indicator).
+
+Furigana and readings are shown only in the expanded entry and in the
+examples, so toggling furigana never changes the height of collapsed
+rows.
 
 Do not display empty fields unnecessarily.
 

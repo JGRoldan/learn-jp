@@ -37,29 +37,37 @@ const useRuby =
   data-category-id={entry.categoryId ?? ''}
   data-learned={entry.aprendido ? 'true' : 'false'}
 >
-  <!-- Colapsado: la palabra, con furigana o con sus lecturas apiladas. -->
+  <!-- Colapsado: solo la palabra en texto plano. El furigana y las
+       lecturas se muestran al expandir, para que alternarlos no cambie
+       la altura de las filas cerradas. -->
   <summary>
-    {wordIsAnki ? (
-      <span class="word">
-        <RubySegments segments={entry.wordSegments!} />
-      </span>
-    ) : useRuby ? (
-      <span class="word">
-        <RubyText base={entry.palabra} reading={entry.readings[0]!} />
-      </span>
-    ) : (
-      <span class="word">{entry.palabra}</span>
-    )}
-    {!wordIsAnki && !useRuby && entry.readings.length > 0 && (
-      <span class="reading-stack">
-        {entry.readings.map((reading) => (
-          <span class="reading-line">{reading}</span>
-        ))}
-      </span>
-    )}
+    <span class="word">{entry.palabra}</span>
   </summary>
 
   <div class="item-body">
+    <div class="word-detail">
+      {wordIsAnki ? (
+        <span class="word">
+          <RubySegments segments={entry.wordSegments!} />
+        </span>
+      ) : useRuby ? (
+        <span class="word">
+          <RubyText base={entry.palabra} reading={entry.readings[0]!} />
+        </span>
+      ) : (
+        <>
+          <span class="word">{entry.palabra}</span>
+          {entry.readings.length > 0 && (
+            <span class="reading-stack">
+              {entry.readings.map((reading) => (
+                <span class="reading-line">{reading}</span>
+              ))}
+            </span>
+          )}
+        </>
+      )}
+    </div>
+
     {entry.significado !== null && (
       <p class="significado">{entry.significado}</p>
     )}

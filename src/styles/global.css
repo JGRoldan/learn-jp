@@ -266,6 +266,18 @@ html.hide-furigana .examples .reading-line {
   line-height: var(--line-height-ruby);
 }
 
+/*
+ * La palabra con furigana y lecturas vive en el cuerpo expandido. El
+ * summary se mantiene en texto plano para que alternar el furigana no
+ * cambie la altura de las filas cerradas.
+ */
+.word-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+
 .vocabulary-item[open] {
   border-color: var(--color-accent);
 }

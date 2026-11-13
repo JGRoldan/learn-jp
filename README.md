@@ -6,7 +6,7 @@ publicada; la web solo lee y nunca escribe en ella.
 
 ## Funciones
 
-- Lista de vocabulario con furigana (formato plano y marcado Anki).
+- Lista de vocabulario con furigana al expandir cada palabra.
 - Búsqueda por palabra, lectura o significado, y filtros por categoría y
   estado aprendido.
 - Repaso diario y aprendizaje de palabras nuevas con cupo configurable.
