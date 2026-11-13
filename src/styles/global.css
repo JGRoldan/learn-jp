@@ -819,6 +819,28 @@ html.js .vocabulary-list > li:not(.is-visible) {
   .card-front .word {
     font-size: 2.1rem;
   }
+
+  /*
+   * En móvil la barra de calificación queda fija al fondo del viewport
+   * mientras la respuesta está revelada, para no tener que bajar hasta
+   * el final de ejemplos largos. El espacio inferior reservado evita
+   * que la barra tape el último contenido.
+   */
+  .study-card:not([hidden]) .study-grade:not([hidden]) {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -6px 18px rgb(36 41 47 / 12%);
+  }
+
+  body:has(.study-card:not([hidden]) .study-grade:not([hidden])) .site-main {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ---------- Accesibilidad ---------- */
