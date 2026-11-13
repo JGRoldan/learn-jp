@@ -1,5 +1,6 @@
 ---
 import VocabularyItem from './VocabularyItem.astro';
+import { VOCABULARY_PAGE_SIZE } from '../../features/vocabulary/pagination';
 import type { VocabularyViewEntry } from '../../features/vocabulary/vocabulary.types';
 
 interface Props {
@@ -10,10 +11,13 @@ const { entries } = Astro.props;
 ---
 
 <ul class="vocabulary-list" id="vocabulary-list">
-  {entries.map((entry) => (
-    <li>
+  {entries.map((entry, index) => (
+    <li class={index < VOCABULARY_PAGE_SIZE ? 'is-visible' : undefined}>
       <VocabularyItem entry={entry} />
     </li>
   ))}
 </ul>
+<button class="load-more" id="load-more" type="button" aria-controls="vocabulary-list" hidden>
+  Cargar más
+</button>
 <p class="no-results" id="no-results" hidden>No hay resultados con la búsqueda o los filtros actuales.</p>

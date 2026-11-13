@@ -7,6 +7,7 @@ publicada; la web solo lee y nunca escribe en ella.
 ## Funciones
 
 - Lista de vocabulario con furigana al expandir cada palabra.
+- Carga progresiva de 20 en 20 con botón y auto-carga al hacer scroll.
 - Búsqueda por palabra, lectura o significado, y filtros por categoría y
   estado aprendido.
 - Repaso diario y aprendizaje de palabras nuevas con cupo configurable.

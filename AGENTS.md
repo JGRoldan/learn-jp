@@ -387,6 +387,10 @@ Implementation notes:
   attribute on the `<details>` elements of the list (exclusive
   accordion), so opening an entry closes the previous one without
   JavaScript.
+- The list initially shows the first 20 matching entries. «Cargar más»
+  reveals 20 more and scrolling near the button auto-loads the next
+  batch. This is a client-side reveal over rows already rendered by the
+  server; changing the search or filters resets the visible batch to 20.
 - The expanded state is visual only and is not persisted.
 
 ### 8.2 Furigana Visibility

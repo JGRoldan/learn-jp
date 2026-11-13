@@ -17,6 +17,11 @@ import {
   getBrowserStorage,
   loadStudyStore,
 } from '../features/study/study.storage';
+import {
+  VOCABULARY_PAGE_SIZE,
+  formatVisibleCount,
+  nextVisibleLimit,
+} from '../features/vocabulary/pagination';
 
 const FURIGANA_STORAGE_KEY = 'jp-study:furigana';
 const SEARCH_DEBOUNCE_MS = 150;
@@ -67,13 +72,14 @@ export function initFuriganaToggle(): void {
   });
 }
 
-/** Configura la búsqueda en vivo y los filtros combinables. */
+/** Configura la búsqueda en vivo, los filtros y la carga progresiva. */
 function initSearchAndFilters(): void {
   const searchInput = document.getElementById('search-input');
   const categorySelect = document.getElementById('category-select');
   const learnedSelect = document.getElementById('learned-select');
   const resultCount = document.getElementById('result-count');
   const noResults = document.getElementById('no-results');
+  const loadMore = document.getElementById('load-more');
   const items = document.querySelectorAll<HTMLDetailsElement>('details.vocabulary-item');
 
   if (
@@ -82,12 +88,16 @@ function initSearchAndFilters(): void {
     !(learnedSelect instanceof HTMLSelectElement) ||
     !(resultCount instanceof HTMLElement) ||
     !(noResults instanceof HTMLElement) ||
+    !(loadMore instanceof HTMLButtonElement) ||
     items.length === 0
   ) {
     return;
   }
 
   applyLocalLearnedState(items);
+
+  let visibleLimit = VOCABULARY_PAGE_SIZE;
+  let matchingItems: HTMLDetailsElement[] = [];
 
   const matchesQuery = (item: HTMLDetailsElement, query: string): boolean => {
     if (query === '') return true;
@@ -97,11 +107,39 @@ function initSearchAndFilters(): void {
     return word.includes(query) || reading.includes(query) || meaning.includes(query);
   };
 
+  /**
+   * Aplica el límite de filas visibles sobre las coincidencias actuales.
+   * Las filas se ocultan con una clase en el <li>; el filtro usa `hidden`
+   * en el <details>. Al terminar, oculta el botón y conserva el foco.
+   */
+  const updateChunk = (): void => {
+    const shown = Math.min(visibleLimit, matchingItems.length);
+
+    for (const [index, item] of matchingItems.entries()) {
+      item.closest('li')?.classList.toggle('is-visible', index < shown);
+    }
+
+    resultCount.textContent = formatVisibleCount(shown, matchingItems.length);
+    noResults.hidden = matchingItems.length !== 0;
+
+    if (shown < matchingItems.length) {
+      loadMore.hidden = false;
+      return;
+    }
+
+    const hadFocus = document.activeElement === loadMore;
+    loadMore.hidden = true;
+    if (hadFocus) {
+      const lastSummary = matchingItems.at(-1)?.querySelector('summary');
+      if (lastSummary instanceof HTMLElement) lastSummary.focus();
+    }
+  };
+
   const applyFilters = (): void => {
     const query = normalizeForSearch(searchInput.value);
     const category = categorySelect.value;
     const learned = learnedSelect.value;
-    let visibleCount = 0;
+    matchingItems = [];
 
     for (const item of items) {
       const matchesCategory =
@@ -111,13 +149,34 @@ function initSearchAndFilters(): void {
       const matches = matchesCategory && matchesLearned && matchesQuery(item, query);
 
       item.hidden = !matches;
-      if (matches) visibleCount += 1;
+      if (matches) matchingItems.push(item);
     }
 
-    resultCount.textContent =
-      visibleCount === 1 ? '1 palabra' : `${visibleCount} palabras`;
-    noResults.hidden = visibleCount !== 0;
+    visibleLimit = VOCABULARY_PAGE_SIZE;
+    updateChunk();
   };
+
+  const showMore = (): void => {
+    if (loadMore.hidden) return;
+    visibleLimit = nextVisibleLimit(visibleLimit, matchingItems.length);
+    updateChunk();
+  };
+
+  loadMore.addEventListener('click', showMore);
+
+  // Auto-carga solo al desplazarse, nunca al aplicar filtros: así un
+  // filtro con pocos resultados no salta de golpe a la segunda tanda.
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (loadMore.hidden) return;
+      const rect = loadMore.getBoundingClientRect();
+      if (rect.top <= window.innerHeight + 200 && rect.bottom >= 0) {
+        showMore();
+      }
+    },
+    { passive: true },
+  );
 
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
   searchInput.addEventListener('input', () => {
@@ -126,6 +185,8 @@ function initSearchAndFilters(): void {
   });
   categorySelect.addEventListener('change', applyFilters);
   learnedSelect.addEventListener('change', applyFilters);
+
+  applyFilters();
 }
 
 /**

@@ -1,5 +1,9 @@
 ---
 import type { Category } from '../../features/categories/categories.types';
+import {
+  formatVisibleCount,
+  getInitialVisibleCount,
+} from '../../features/vocabulary/pagination';
 
 interface Props {
   /** Categorías activas, dinámicas desde la hoja. */
@@ -9,6 +13,7 @@ interface Props {
 }
 
 const { categories, initialCount } = Astro.props;
+const initialVisibleCount = getInitialVisibleCount(initialCount);
 ---
 
 <div class="filters">
@@ -43,6 +48,6 @@ const { categories, initialCount } = Astro.props;
   </div>
 
   <p class="result-count" id="result-count" aria-live="polite">
-    {initialCount === 1 ? '1 palabra' : `${initialCount} palabras`}
+    {formatVisibleCount(initialVisibleCount, initialCount)}
   </p>
 </div>

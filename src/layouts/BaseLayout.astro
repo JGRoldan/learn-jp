@@ -20,9 +20,12 @@ const isStudy = pathname === '/estudiar' || pathname.startsWith('/estudiar/');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Visor de vocabulario japonés" />
     <title>{title}</title>
-    <!-- Aplica la preferencia de furigana antes del primer render
-         para evitar un destello de lecturas. -->
+    <!-- Marca que hay JavaScript antes del primer render: la lista de
+         vocabulario oculta las filas que aún no toca mostrar. Sin JS se
+         muestran todas. También aplica la preferencia de furigana antes
+         del primer render para evitar un destello de lecturas. -->
     <script is:inline>
+      document.documentElement.classList.add('js');
       try {
         if (localStorage.getItem('jp-study:furigana') === 'off') {
           document.documentElement.classList.add('hide-furigana');
