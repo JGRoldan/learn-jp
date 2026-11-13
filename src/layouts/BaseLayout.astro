@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import FuriganaToggle from '../components/vocabulary/FuriganaToggle.astro';
+
+interface Props {
+  readonly title?: string;
+}
+
+const { title = 'Japanese Memo' } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const isVocabulary = pathname === '/';
+const isStudy = pathname === '/estudiar' || pathname.startsWith('/estudiar/');
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Visor de vocabulario japonés" />
+    <title>{title}</title>
+    <!-- Aplica la preferencia de furigana antes del primer render
+         para evitar un destello de lecturas. -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('jp-study:furigana') === 'off') {
+          document.documentElement.classList.add('hide-furigana');
+        }
+      } catch {
+        /* localStorage no disponible: se ignora */
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>Japanese Memo</h1>
+      <div class="site-header-actions">
+        <nav class="site-nav" aria-label="Principal">
+          <a
+            class="site-nav-link"
+            href="/"
+            aria-current={isVocabulary ? 'page' : undefined}
+          >
+            Vocabulario
+          </a>
+          <a
+            class="site-nav-link"
+            href="/estudiar"
+            aria-current={isStudy ? 'page' : undefined}
+          >
+            Estudiar
+            <span class="due-badge" id="due-badge" hidden>0</span>
+          </a>
+        </nav>
+        <FuriganaToggle />
+      </div>
+    </header>
+    <main class="site-main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<script>
+  import { initFuriganaToggle } from '../scripts/vocabulary-controls';
+  import { initStudyBadge } from '../scripts/study-badge';
+  initFuriganaToggle();
+  initStudyBadge();
+</script>

@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StudySession from '../../components/study/StudySession.astro';
+import { parseSessionParams } from '../../features/study/study.service';
+
+const parsed = parseSessionParams(Astro.url.searchParams);
+if (!parsed.ok) {
+  Astro.response.status = 400;
+}
+---
+
+<BaseLayout
+  title={parsed.ok ? 'Sesión de estudio · Japanese Memo' : 'Sesión no válida · Japanese Memo'}
+>
+  {
+    parsed.ok ? (
+      <StudySession
+        mode={parsed.params.mode}
+        categoryId={parsed.params.categoryId}
+        limit={parsed.params.limit}
+      />
+    ) : (
+      <>
+        <div class="error-message" role="alert">
+          <h2>Sesión no válida</h2>
+          <p>{parsed.message}</p>
+        </div>
+        <p><a class="study-button" href="/estudiar">Volver a estudiar</a></p>
+      </>
+    )
+  }
+</BaseLayout>
+
+<script>
+  import { initStudySession } from '../../scripts/study-session';
+  initStudySession();
+</script>

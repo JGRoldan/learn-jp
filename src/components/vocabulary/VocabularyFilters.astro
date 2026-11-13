@@ -1,0 +1,48 @@
+---
+import type { Category } from '../../features/categories/categories.types';
+
+interface Props {
+  /** Categorías activas, dinámicas desde la hoja. */
+  readonly categories: readonly Category[];
+  /** Número de palabras visibles al cargar. */
+  readonly initialCount: number;
+}
+
+const { categories, initialCount } = Astro.props;
+---
+
+<div class="filters">
+  <div class="field field-grow">
+    <label for="search-input">Buscar</label>
+    <input
+      id="search-input"
+      type="search"
+      placeholder="Palabra, lectura o significado"
+      autocomplete="off"
+      spellcheck="false"
+    />
+  </div>
+
+  <div class="field">
+    <label for="category-select">Categoría</label>
+    <select id="category-select">
+      <option value="all">Todas</option>
+      {categories.map((category) => (
+        <option value={category.id}>{category.name}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="learned-select">Estado</label>
+    <select id="learned-select">
+      <option value="all">Todas</option>
+      <option value="learned">Aprendidas</option>
+      <option value="pending">Pendientes</option>
+    </select>
+  </div>
+
+  <p class="result-count" id="result-count" aria-live="polite">
+    {initialCount === 1 ? '1 palabra' : `${initialCount} palabras`}
+  </p>
+</div>

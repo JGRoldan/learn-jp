@@ -1,0 +1,112 @@
+---
+/**
+ * Resumen de estudio: repasos pendientes, nuevas disponibles y acceso a
+ * las dos sesiones independientes (Repasar hoy / Aprender nuevas).
+ *
+ * El HTML es estático; `initStudySummary` lee el pool y el store local
+ * y rellena los contadores y el selector de categoría en el cliente.
+ */
+---
+
+<section id="study-summary" class="study-summary" aria-labelledby="study-summary-title">
+  <h2 id="study-summary-title">Estudiar</h2>
+
+  <div class="study-stats">
+    <div class="study-stat">
+      <span class="study-stat-value" id="due-count">—</span>
+      <span class="study-stat-label">Repasos pendientes</span>
+    </div>
+    <div class="study-stat">
+      <span class="study-stat-value" id="new-count">—</span>
+      <span class="study-stat-label">Nuevas disponibles</span>
+    </div>
+    <div class="study-stat">
+      <span class="study-stat-value" id="new-allowance">—</span>
+      <span class="study-stat-label">Cupo restante hoy</span>
+    </div>
+  </div>
+
+  <p class="study-notice" id="study-notice" role="status" hidden></p>
+
+  <div class="study-actions">
+    <div class="study-action">
+      <h3>Repasar hoy</h3>
+      <p>Palabras ya introducidas cuyo próximo repaso vence hoy o antes.</p>
+      <a id="review-link" class="study-button" href="/estudiar/sesion?modo=repaso">
+        Repasar hoy
+      </a>
+    </div>
+
+    <div class="study-action">
+      <h3>Aprender nuevas</h3>
+      <p>Elige una categoría; se añaden hasta el cupo diario disponible.</p>
+      <label class="study-field" for="study-category">Categoría</label>
+      <select id="study-category" class="study-select" disabled>
+        <option>Cargando…</option>
+      </select>
+      <button id="new-button" class="study-button" type="button" disabled>
+        Aprender nuevas
+      </button>
+    </div>
+  </div>
+
+  <div class="study-settings">
+    <h3>Ajustes</h3>
+    <label class="study-field" for="new-per-day">Nuevas por día</label>
+    <input
+      id="new-per-day"
+      class="study-number"
+      type="number"
+      min="1"
+      max="100"
+      step="1"
+      inputmode="numeric"
+      aria-describedby="new-per-day-hint"
+    />
+    <p class="study-settings-hint" id="new-per-day-hint">
+      Cupo diario global para «Aprender nuevas». Se guarda en este navegador.
+    </p>
+  </div>
+
+  <div class="study-data">
+    <h3>Datos</h3>
+    <p class="study-settings-hint">
+      El progreso se guarda solo en este navegador. Descarga una copia para no
+      perderlo.
+    </p>
+    <div class="study-data-actions">
+      <button id="backup-export" class="study-button study-button-secondary" type="button">
+        Descargar copia de seguridad
+      </button>
+      <button id="backup-import-button" class="study-button study-button-secondary" type="button">
+        Restaurar copia de seguridad
+      </button>
+      <input
+        id="backup-file"
+        type="file"
+        accept="application/json,.json"
+        aria-label="Archivo de copia de seguridad"
+        hidden
+      />
+      <button
+        id="sync-button"
+        class="study-button"
+        type="button"
+        disabled
+        title="Próximamente"
+      >
+        Sincronizar con Google Sheets
+      </button>
+    </div>
+    <p class="study-settings-hint">
+      La sincronización con la hoja llegará más adelante: por ahora el botón es
+      un marcador y la web nunca escribe en el spreadsheet.
+    </p>
+  </div>
+
+  <noscript>
+    <p class="study-notice">
+      El modo de estudio necesita JavaScript: el progreso se guarda en tu navegador.
+    </p>
+  </noscript>
+</section>

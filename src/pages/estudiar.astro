@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StudySummary from '../components/study/StudySummary.astro';
+---
+
+<BaseLayout title="Estudiar · Japanese Memo">
+  <StudySummary />
+</BaseLayout>
+
+<script>
+  import { initStudySummary } from '../scripts/study-session';
+  initStudySummary();
+</script>

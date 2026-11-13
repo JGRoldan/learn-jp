@@ -1,0 +1,31 @@
+{
+  "name": "jp-study",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Visor de vocabulario japonés con furigana y repaso espaciado SM-2",
+  "engines": {
+    "node": ">=22.23.4",
+    "npm": ">=9.6.5"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^11.0.21",
+    "astro": "^7.4.8",
+    "papaparse": "^5.7.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/papaparse": "^5.5.2",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

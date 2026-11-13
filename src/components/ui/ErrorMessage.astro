@@ -1,0 +1,13 @@
+---
+interface Props {
+  /** Mensaje apto para el usuario; sin trazas internas ni valores de entorno. */
+  readonly message: string;
+}
+
+const { message } = Astro.props;
+---
+
+<div class="error-message" role="alert">
+  <h2>No se pudo cargar el vocabulario</h2>
+  <p>{message}</p>
+</div>

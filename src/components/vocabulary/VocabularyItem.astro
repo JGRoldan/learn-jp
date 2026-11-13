@@ -1,0 +1,106 @@
+---
+import RubySegments from './RubySegments.astro';
+import RubyText from './RubyText.astro';
+import { containsKanji } from '../../features/vocabulary/readings';
+import type { VocabularyViewEntry } from '../../features/vocabulary/vocabulary.types';
+
+interface Props {
+  readonly entry: VocabularyViewEntry;
+}
+
+const { entry } = Astro.props;
+
+// Tres formas de mostrar la palabra:
+// 1. Marcado Anki en `lectura` → furigana por kanji (segmentos).
+// 2. Formato plano, palabra completa con una unica lectura → ruby
+//    sobre la palabra entera.
+// 3. Kanji suelto (varias lecturas o texto sin kanji) → lecturas
+//    apiladas debajo.
+const wordIsAnki = entry.wordSegments !== null;
+const useRuby =
+  !wordIsAnki &&
+  entry.palabra.length > 1 &&
+  entry.readings.length === 1 &&
+  containsKanji(entry.palabra);
+---
+
+<!-- data-* alimentan la búsqueda y los filtros client-side:
+     textos derivados en servidor (palabra, lecturas normalizadas,
+     significados), nunca el contenido crudo de las celdas. -->
+<details
+  class="vocabulary-item"
+  data-id={entry.id}
+  data-word={entry.searchWord}
+  data-reading={entry.searchReading}
+  data-meaning={entry.searchMeaning}
+  data-category-id={entry.categoryId ?? ''}
+  data-learned={entry.aprendido ? 'true' : 'false'}
+>
+  <!-- Colapsado: la palabra, con furigana o con sus lecturas apiladas. -->
+  <summary>
+    {wordIsAnki ? (
+      <span class="word">
+        <RubySegments segments={entry.wordSegments!} />
+      </span>
+    ) : useRuby ? (
+      <span class="word">
+        <RubyText base={entry.palabra} reading={entry.readings[0]!} />
+      </span>
+    ) : (
+      <span class="word">{entry.palabra}</span>
+    )}
+    {!wordIsAnki && !useRuby && entry.readings.length > 0 && (
+      <span class="reading-stack">
+        {entry.readings.map((reading) => (
+          <span class="reading-line">{reading}</span>
+        ))}
+      </span>
+    )}
+  </summary>
+
+  <div class="item-body">
+    {entry.significado !== null && (
+      <p class="significado">{entry.significado}</p>
+    )}
+
+    {entry.examples.length > 0 && (
+      <ul class="examples">
+        {entry.examples.map((example) => {
+          const exampleHasKanji = containsKanji(example.text);
+          return (
+            <li>
+              <span class="example-text">
+                {example.segments !== null ? (
+                  <RubySegments segments={example.segments} />
+                ) : example.reading !== null && exampleHasKanji ? (
+                  <RubyText base={example.text} reading={example.reading} />
+                ) : (
+                  example.text
+                )}
+              </span>
+              {example.reading !== null &&
+                example.segments === null &&
+                !exampleHasKanji && (
+                  <span class="reading-line">{example.reading}</span>
+                )}
+              {example.meaning !== null && (
+                <span class="example-meaning">{example.meaning}</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    )}
+
+    <div class="item-meta">
+      {entry.categoryName !== null && (
+        <span class="category-chip">{entry.categoryName}</span>
+      )}
+      {entry.aprendido ? (
+        <span class="badge badge-learned">Aprendida</span>
+      ) : (
+        <span class="badge badge-pending">Pendiente</span>
+      )}
+    </div>
+  </div>
+</details>

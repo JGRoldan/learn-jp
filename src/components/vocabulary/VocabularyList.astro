@@ -1,0 +1,19 @@
+---
+import VocabularyItem from './VocabularyItem.astro';
+import type { VocabularyViewEntry } from '../../features/vocabulary/vocabulary.types';
+
+interface Props {
+  readonly entries: readonly VocabularyViewEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ul class="vocabulary-list" id="vocabulary-list">
+  {entries.map((entry) => (
+    <li>
+      <VocabularyItem entry={entry} />
+    </li>
+  ))}
+</ul>
+<p class="no-results" id="no-results" hidden>No hay resultados con la búsqueda o los filtros actuales.</p>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ErrorMessage from '../components/ui/ErrorMessage.astro';
+import VocabularyFilters from '../components/vocabulary/VocabularyFilters.astro';
+import VocabularyList from '../components/vocabulary/VocabularyList.astro';
+import { loadVocabulary } from '../features/vocabulary/vocabulary.service';
+
+const result = await loadVocabulary();
+---
+
+<BaseLayout>
+  {
+    result.ok ? (
+      <>
+        <VocabularyFilters categories={result.categories} initialCount={result.entries.length} />
+        {result.invalidRowCount > 0 && (
+          <p class="invalid-rows-note">
+            {result.invalidRowCount === 1
+              ? 'Hay 1 fila de la hoja con datos inválidos que fue ignorada. Revisa la consola del servidor para verla.'
+              : `Hay ${result.invalidRowCount} filas de la hoja con datos inválidos que fueron ignoradas. Revisa la consola del servidor para verlas.`}
+          </p>
+        )}
+        <VocabularyList entries={result.entries} />
+      </>
+    ) : (
+      <ErrorMessage message={result.message} />
+    )
+  }
+</BaseLayout>
+
+<script>
+  import { initVocabularyControls } from '../scripts/vocabulary-controls';
+  initVocabularyControls();
+</script>

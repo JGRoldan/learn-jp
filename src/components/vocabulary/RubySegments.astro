@@ -1,0 +1,22 @@
+---
+import type { AnkiSegment } from '../../features/vocabulary/anki-markup';
+
+interface Props {
+  /** Segmentos ya parseados del marcado Anki (texto plano + ruby). */
+  readonly segments: readonly AnkiSegment[];
+}
+
+const { segments } = Astro.props;
+---
+
+<!-- Furigana por kanji según el marcado Anki parseado. El toggle de la
+     pagina oculta los <rt> via CSS; no re-parsea nada. -->
+<span class="jp-ruby">
+  {segments.map((segment) =>
+    segment.type === 'ruby' ? (
+      <ruby>{segment.base}<rt>{segment.reading}</rt></ruby>
+    ) : (
+      segment.text
+    )
+  )}
+</span>

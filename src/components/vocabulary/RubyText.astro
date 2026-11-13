@@ -1,0 +1,16 @@
+---
+interface Props {
+  /** Texto base: kanji o palabra completa. */
+  readonly base: string;
+  /** Lectura mostrada sobre el texto base. */
+  readonly reading: string;
+}
+
+const { base, reading } = Astro.props;
+---
+
+<!-- Lectura como furigana semantico. El toggle de la pagina oculta
+     los <rt> via CSS; no re-parsea nada. -->
+<span class="jp-ruby">
+  <ruby>{base}<rt>{reading}</rt></ruby>
+</span>

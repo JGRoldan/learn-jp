@@ -1,0 +1,99 @@
+---
+/**
+ * Shell de una sesión de estudio.
+ *
+ * El servidor valida los parámetros y pasa el modo; `initStudySession`
+ * lee el pool, siembra el store local, construye la cola y conduce la
+ * sesión en el cliente. Aquí no se renderiza contenido de la hoja.
+ */
+interface Props {
+  readonly mode: 'review' | 'new';
+  readonly categoryId: string | null;
+  readonly limit: number | null;
+}
+
+const { mode, categoryId, limit } = Astro.props;
+const modeLabel = mode === 'review' ? 'Repasar hoy' : 'Aprender nuevas';
+---
+
+<section
+  id="study-session"
+  class="study-session"
+  data-mode={mode}
+  data-category={categoryId ?? ''}
+  data-limit={limit === null ? '' : String(limit)}
+  aria-labelledby="session-mode"
+>
+  <header class="session-top">
+    <p class="session-mode" id="session-mode">{modeLabel}</p>
+    <p class="session-context" id="session-context"></p>
+    <p class="session-progress" id="session-progress" aria-live="polite" aria-atomic="true">0 / 0</p>
+    <a class="session-exit" href="/estudiar">Salir</a>
+  </header>
+
+  <p class="study-notice" id="session-notice" role="status" hidden></p>
+  <p class="session-empty" id="session-empty" role="status" hidden></p>
+
+  <article class="study-card" id="study-card" tabindex="-1" hidden>
+    <div class="card-front" id="card-front"></div>
+
+    <button
+      class="study-button reveal-button"
+      id="reveal-button"
+      type="button"
+      aria-describedby="card-front"
+    >
+      Mostrar respuesta
+    </button>
+
+    <div class="card-back" id="card-back" hidden>
+      <p class="card-meaning" id="card-meaning" hidden></p>
+      <ul class="examples card-examples" id="card-examples" hidden></ul>
+    </div>
+
+    <div class="study-grade" id="study-grade" role="group" aria-label="Calificar respuesta" hidden>
+      <button class="grade-button grade-again" data-grade="0" type="button">
+        Otra vez <kbd>1</kbd>
+      </button>
+      <button class="grade-button grade-good" data-grade="3" type="button">
+        Bien <kbd>2</kbd>
+      </button>
+      <button class="grade-button grade-easy" data-grade="5" type="button">
+        Fácil <kbd>3</kbd>
+      </button>
+    </div>
+
+    <p class="session-hint" id="session-hint">
+      <span id="hint-front">Pulsa <kbd>Espacio</kbd> para mostrar la respuesta.</span>
+      <span id="hint-back" hidden>Califica con <kbd>1</kbd>, <kbd>2</kbd> o <kbd>3</kbd>.</span>
+    </p>
+  </article>
+
+  <section
+    class="session-summary"
+    id="session-summary"
+    aria-labelledby="session-summary-title"
+    hidden
+  >
+    <h2 id="session-summary-title" tabindex="-1">Sesión completada</h2>
+    <dl class="session-stats">
+      <div>
+        <dt>Tarjetas</dt>
+        <dd id="stat-cards">0</dd>
+      </div>
+      <div>
+        <dt>Precisión</dt>
+        <dd id="stat-accuracy">—</dd>
+      </div>
+      <div>
+        <dt>Otra vez</dt>
+        <dd id="stat-again">0</dd>
+      </div>
+      <div>
+        <dt>Tiempo</dt>
+        <dd id="stat-time">0 s</dd>
+      </div>
+    </dl>
+    <a class="study-button" href="/estudiar">Volver al resumen</a>
+  </section>
+</section>

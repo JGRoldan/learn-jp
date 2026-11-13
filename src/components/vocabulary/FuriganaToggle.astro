@@ -1,0 +1,20 @@
+---
+/**
+ * Control de visibilidad de furigana.
+ *
+ * Alterna una clase en <html> que oculta los <rt> vía CSS; no modifica
+ * datos ni re-parsea contenido. La preferencia se persiste en
+ * localStorage y la aplica el script inline del layout antes del
+ * primer render.
+ */
+---
+
+<button
+  id="furigana-toggle"
+  class="furigana-toggle"
+  type="button"
+  aria-pressed="true"
+  aria-label="Mostrar u ocultar furigana"
+>
+  ふりがな
+</button>

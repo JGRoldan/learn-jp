@@ -1,0 +1,792 @@
+/* ============================================================
+   Japanese Memo — estilos globales (CSS plano, sin frameworks)
+   ============================================================ */
+
+:root {
+  --color-bg: #f7f6f2;
+  --color-surface: #ffffff;
+  --color-text: #24292f;
+  --color-muted: #57606a;
+  --color-border: #d8dee4;
+  --color-accent: #9d2235;
+  --color-learned: #1a7f37;
+  --color-error-bg: #fff1f0;
+  --color-error-border: #ffccc7;
+  --color-error-text: #a8071a;
+
+  --font-jp: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic',
+    'Noto Sans JP', 'Meiryo', system-ui, sans-serif;
+
+  /* line-height generoso para que <rt> no choque con la línea anterior */
+  --line-height-ruby: 2.1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* El atributo `hidden` debe ganar a los `display` de los componentes. */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  font-family: var(--font-jp);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+body {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ---------- Cabecera ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  padding: 0.65rem 1rem;
+  background-color: rgb(247 246 242 / 92%);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+
+.site-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem 0.75rem;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.site-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.site-nav-link:hover {
+  background-color: rgb(36 41 47 / 6%);
+  color: var(--color-text);
+}
+
+.site-nav-link[aria-current='page'] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.due-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background-color: var(--color-accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---------- Contenido ---------- */
+
+.site-main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+/* ---------- Controles ---------- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+.filters .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.filters .field-grow {
+  flex: 1 1 14rem;
+}
+
+.filters label {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.filters input,
+.filters select {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.result-count {
+  width: 100%;
+  margin: -0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+/* ---------- Furigana y lecturas ---------- */
+
+.jp-ruby {
+  line-height: var(--line-height-ruby);
+}
+
+.jp-ruby rt {
+  font-size: 0.52em;
+  color: var(--color-muted);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Lecturas apiladas: kanji con varias lecturas, o textos sin kanji. */
+.reading-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  margin-top: 0.1rem;
+}
+
+.reading-line {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+/* Ocultar lecturas con el control (no re-parsea nada): furigana de
+   <ruby> y lecturas apiladas o de respaldo. */
+html.hide-furigana .jp-ruby rt {
+  display: none;
+}
+
+html.hide-furigana .reading-stack,
+html.hide-furigana .examples .reading-line {
+  display: none;
+}
+
+.furigana-toggle {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.furigana-toggle[aria-pressed='true'] {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* ---------- Lista de vocabulario ---------- */
+
+.vocabulary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/*
+ * El script de filtrado oculta cada <details class="vocabulary-item">
+ * con [hidden], pero el ítem real del flex es el <li> que lo envuelve.
+ * Sin esta regla el <li> vacío seguiría en flujo y conservaría su hueco
+ * de gap, dejando espacio muerto antes de los resultados filtrados.
+ */
+.vocabulary-list > li:has(> details[hidden]) {
+  display: none;
+}
+
+.vocabulary-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vocabulary-item summary {
+  display: list-item;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+}
+
+.vocabulary-item summary::-webkit-details-marker {
+  color: var(--color-muted);
+}
+
+.vocabulary-item .word {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: var(--line-height-ruby);
+}
+
+.vocabulary-item[open] {
+  border-color: var(--color-accent);
+}
+
+.item-body {
+  padding: 0.5rem 1rem 0.9rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.significado {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.examples {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.examples li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-left: 0.85rem;
+  border-left: 3px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.example-text {
+  font-size: 1.05rem;
+  line-height: var(--line-height-ruby);
+}
+
+.example-meaning {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-learned {
+  background-color: var(--color-learned);
+  color: #fff;
+}
+
+.badge-pending {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+}
+
+.category-chip {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+}
+
+/* ---------- Estados ---------- */
+
+.no-results {
+  text-align: center;
+  color: var(--color-muted);
+  padding: 2.5rem 0;
+}
+
+.invalid-rows-note {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin: -0.25rem 0 1rem;
+}
+
+.error-message {
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error-text);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.error-message h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.error-message p {
+  margin: 0;
+}
+
+/* ---------- Estudio: resumen ---------- */
+
+.study-summary h2 {
+  font-size: 1.35rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.study-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.study-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0.9rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.study-stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.study-stat-label {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.study-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.study-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.study-action h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.study-action p {
+  margin: 0 0 0.35rem;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+
+.study-field {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.study-select {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  width: 100%;
+  max-width: 22rem;
+}
+
+.study-button {
+  display: inline-block;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  background-color: var(--color-accent);
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.study-button:hover {
+  filter: brightness(1.08);
+}
+
+.study-button:disabled,
+.study-button[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.study-notice {
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.88rem;
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error-text);
+  border-radius: 8px;
+}
+
+.study-settings,
+.study-data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.study-settings h3,
+.study-data h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.05rem;
+}
+
+.study-number {
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  width: 7rem;
+}
+
+.study-settings-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.study-data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.study-button-secondary {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.study-button-secondary:hover {
+  background-color: var(--color-bg);
+  filter: none;
+}
+
+/* ---------- Estudio: sesión ---------- */
+
+.session-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.session-mode {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.session-context {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.session-progress {
+  margin: 0 0 0 auto;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-muted);
+}
+
+.session-exit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.session-empty {
+  margin: 2rem 0;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--color-muted);
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+}
+
+.study-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.card-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 9rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.card-front .word {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: var(--line-height-ruby);
+}
+
+.card-front .reading-stack {
+  align-items: center;
+  font-size: 1.1rem;
+}
+
+.reveal-button {
+  align-self: center;
+}
+
+.card-back {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.card-meaning {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.study-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.grade-button {
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.65rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.grade-button:hover {
+  filter: brightness(0.97);
+}
+
+.grade-again {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.grade-easy {
+  background-color: var(--color-learned);
+  border-color: var(--color-learned);
+  color: #fff;
+}
+
+.grade-button kbd,
+.session-hint kbd {
+  font-family: inherit;
+  font-size: 0.78em;
+  padding: 0.05rem 0.35rem;
+  margin-left: 0.25rem;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 4px;
+}
+
+.session-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+}
+
+.session-hint kbd {
+  border-color: var(--color-border);
+}
+
+.session-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.session-summary h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.session-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  width: 100%;
+}
+
+.session-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.session-stats dt {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+.session-stats dd {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 40rem) {
+  .study-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .study-stat {
+    padding: 0.6rem 0.55rem;
+  }
+
+  .study-stat-value {
+    font-size: 1.35rem;
+  }
+
+  .study-stat-label {
+    font-size: 0.72rem;
+  }
+
+  .study-actions,
+  .session-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .study-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .session-stats {
+    gap: 0.5rem 0.75rem;
+  }
+
+  .card-front .word {
+    font-size: 2.1rem;
+  }
+}
+
+/* ---------- Accesibilidad ---------- */
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
