@@ -11,6 +11,6 @@ const { base, reading } = Astro.props;
 
 <!-- Lectura como furigana semantico. El toggle de la pagina oculta
      los <rt> via CSS; no re-parsea nada. -->
-<span class="jp-ruby">
+<span class="jp-ruby" lang="ja">
   <ruby>{base}<rt>{reading}</rt></ruby>
 </span>

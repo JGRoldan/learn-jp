@@ -35,13 +35,14 @@ const modeLabel = mode === 'review' ? 'Repasar hoy' : 'Aprender nuevas';
   <p class="session-empty" id="session-empty" role="status" hidden></p>
 
   <article class="study-card" id="study-card" tabindex="-1" hidden>
-    <div class="card-front" id="card-front"></div>
+    <div class="card-front" id="card-front" lang="ja"></div>
 
     <button
       class="study-button reveal-button"
       id="reveal-button"
       type="button"
       aria-describedby="card-front"
+      aria-keyshortcuts="Space"
     >
       Mostrar respuesta
     </button>
@@ -52,13 +53,13 @@ const modeLabel = mode === 'review' ? 'Repasar hoy' : 'Aprender nuevas';
     </div>
 
     <div class="study-grade" id="study-grade" role="group" aria-label="Calificar respuesta" hidden>
-      <button class="grade-button grade-again" data-grade="0" type="button">
+      <button class="grade-button grade-again" data-grade="0" type="button" aria-keyshortcuts="1">
         Otra vez <kbd>1</kbd>
       </button>
-      <button class="grade-button grade-good" data-grade="3" type="button">
+      <button class="grade-button grade-good" data-grade="3" type="button" aria-keyshortcuts="2">
         Bien <kbd>2</kbd>
       </button>
-      <button class="grade-button grade-easy" data-grade="5" type="button">
+      <button class="grade-button grade-easy" data-grade="5" type="button" aria-keyshortcuts="3">
         Fácil <kbd>3</kbd>
       </button>
     </div>

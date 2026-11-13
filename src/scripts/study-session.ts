@@ -100,6 +100,7 @@ function loadProgress(storage: KeyValueStorage | null): {
 function createRuby(base: string, reading: string): HTMLElement {
   const wrapper = document.createElement('span');
   wrapper.className = 'jp-ruby';
+  wrapper.lang = 'ja';
   const ruby = document.createElement('ruby');
   ruby.append(document.createTextNode(base));
   const rt = document.createElement('rt');
@@ -112,6 +113,7 @@ function createRuby(base: string, reading: string): HTMLElement {
 function createSegments(segments: readonly AnkiSegment[]): HTMLElement {
   const wrapper = document.createElement('span');
   wrapper.className = 'jp-ruby';
+  wrapper.lang = 'ja';
   for (const segment of segments) {
     if (segment.type === 'ruby') {
       wrapper.append(createRuby(segment.base, segment.reading));
@@ -127,6 +129,7 @@ function createWordContent(word: StudyPoolWord): DocumentFragment {
   const fragment = document.createDocumentFragment();
   const wordElement = document.createElement('span');
   wordElement.className = 'word';
+  wordElement.lang = 'ja';
 
   if (word.wordSegments !== null) {
     wordElement.append(createSegments(word.wordSegments));
@@ -149,6 +152,7 @@ function createWordContent(word: StudyPoolWord): DocumentFragment {
   if (!useRuby && word.readings.length > 0) {
     const stack = document.createElement('span');
     stack.className = 'reading-stack';
+    stack.lang = 'ja';
     for (const reading of word.readings) {
       const line = document.createElement('span');
       line.className = 'reading-line';
@@ -167,6 +171,7 @@ function createExamples(examples: readonly ExampleView[]): DocumentFragment {
     const item = document.createElement('li');
     const text = document.createElement('span');
     text.className = 'example-text';
+    text.lang = 'ja';
 
     const exampleHasKanji = KANJI_RE.test(example.text);
     if (example.segments !== null) {
@@ -185,6 +190,7 @@ function createExamples(examples: readonly ExampleView[]): DocumentFragment {
     ) {
       const readingLine = document.createElement('span');
       readingLine.className = 'reading-line';
+      readingLine.lang = 'ja';
       readingLine.textContent = example.reading;
       item.append(readingLine);
     }

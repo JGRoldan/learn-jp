@@ -11,7 +11,7 @@ const { segments } = Astro.props;
 
 <!-- Furigana por kanji según el marcado Anki parseado. El toggle de la
      pagina oculta los <rt> via CSS; no re-parsea nada. -->
-<span class="jp-ruby">
+<span class="jp-ruby" lang="ja">
   {segments.map((segment) =>
     segment.type === 'ruby' ? (
       <ruby>{segment.base}<rt>{segment.reading}</rt></ruby>

@@ -41,24 +41,24 @@ const useRuby =
        lecturas se muestran al expandir, para que alternarlos no cambie
        la altura de las filas cerradas. -->
   <summary>
-    <span class="word">{entry.palabra}</span>
+    <span class="word" lang="ja">{entry.palabra}</span>
   </summary>
 
   <div class="item-body">
     <div class="word-detail">
       {wordIsAnki ? (
-        <span class="word">
+        <span class="word" lang="ja">
           <RubySegments segments={entry.wordSegments!} />
         </span>
       ) : useRuby ? (
-        <span class="word">
+        <span class="word" lang="ja">
           <RubyText base={entry.palabra} reading={entry.readings[0]!} />
         </span>
       ) : (
         <>
-          <span class="word">{entry.palabra}</span>
+          <span class="word" lang="ja">{entry.palabra}</span>
           {entry.readings.length > 0 && (
-            <span class="reading-stack">
+            <span class="reading-stack" lang="ja">
               {entry.readings.map((reading) => (
                 <span class="reading-line">{reading}</span>
               ))}
@@ -78,7 +78,7 @@ const useRuby =
           const exampleHasKanji = containsKanji(example.text);
           return (
             <li>
-              <span class="example-text">
+              <span class="example-text" lang="ja">
                 {example.segments !== null ? (
                   <RubySegments segments={example.segments} />
                 ) : example.reading !== null && exampleHasKanji ? (
@@ -90,7 +90,7 @@ const useRuby =
               {example.reading !== null &&
                 example.segments === null &&
                 !exampleHasKanji && (
-                  <span class="reading-line">{example.reading}</span>
+                  <span class="reading-line" lang="ja">{example.reading}</span>
                 )}
               {example.meaning !== null && (
                 <span class="example-meaning">{example.meaning}</span>
