@@ -377,6 +377,10 @@ Do not display empty fields unnecessarily.
 Implementation notes:
 - Prefer native, accessible `<details>` / `<summary>` for expand and
   collapse. Add JavaScript only if it is truly needed.
+- Only one entry is expanded at a time. Use the native `name`
+  attribute on the `<details>` elements of the list (exclusive
+  accordion), so opening an entry closes the previous one without
+  JavaScript.
 - The expanded state is visual only and is not persisted.
 
 ### 8.2 Furigana Visibility
