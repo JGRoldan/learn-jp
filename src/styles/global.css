@@ -309,7 +309,7 @@ html.js .vocabulary-list > li:not(.is-visible) {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.9rem;
 }
 
 .examples li {
