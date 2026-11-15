@@ -11,6 +11,8 @@ publicada; la web solo lee y nunca escribe en ella.
 - Búsqueda por palabra, lectura o significado, y filtros por categoría y
   estado aprendido.
 - Repaso diario y aprendizaje de palabras nuevas con cupo configurable.
+  El frente de la tarjeta muestra la palabra sin furigana; al revelar
+  aparecen la lectura, el significado y los ejemplos.
 - Progreso de estudio guardado solo en el navegador (`localStorage`),
   con exportación e importación de copia de seguridad JSON.
 - Sin cuentas, sin cookies de autenticación y sin credenciales de Google.

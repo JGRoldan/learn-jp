@@ -124,6 +124,15 @@ function createSegments(segments: readonly AnkiSegment[]): HTMLElement {
   return wrapper;
 }
 
+/** Renderiza la palabra base sin lecturas para el frente de la tarjeta. */
+function createPlainWord(word: StudyPoolWord): HTMLElement {
+  const wordElement = document.createElement('span');
+  wordElement.className = 'word';
+  wordElement.lang = 'ja';
+  wordElement.textContent = word.palabra;
+  return wordElement;
+}
+
 /** Renderiza la palabra como en la lista (Anki, ruby completo o apilado). */
 function createWordContent(word: StudyPoolWord): DocumentFragment {
   const fragment = document.createDocumentFragment();
@@ -558,6 +567,7 @@ async function runStudySession(root: HTMLElement): Promise<void> {
 
   const initialTotal = queue.length;
   let currentId: string | null = null;
+  let currentWord: StudyPoolWord | null = null;
   let revealed = false;
   let requeuedIds: ReadonlySet<string> = new Set<string>();
   let answered = 0;
@@ -589,8 +599,18 @@ async function runStudySession(root: HTMLElement): Promise<void> {
     hintBack.hidden = !value;
   };
 
+  const reveal = (): void => {
+    if (currentWord !== null) {
+      front.replaceChildren(createWordContent(currentWord));
+    }
+    setRevealed(true);
+    card.focus();
+    updateProgress();
+  };
+
   const finish = (): void => {
     currentId = null;
+    currentWord = null;
     card.hidden = true;
     summary.hidden = false;
     progress.textContent = `${initialTotal} / ${initialTotal}`;
@@ -606,11 +626,12 @@ async function runStudySession(root: HTMLElement): Promise<void> {
 
   const showCard = (word: StudyPoolWord): void => {
     currentId = word.id;
+    currentWord = word;
     setRevealed(false);
     card.hidden = false;
     empty.hidden = true;
 
-    front.replaceChildren(createWordContent(word));
+    front.replaceChildren(createPlainWord(word));
     meaning.textContent = word.significado ?? '';
     meaning.hidden = word.significado === null;
     examples.replaceChildren(createExamples(word.examples));
@@ -660,6 +681,7 @@ async function runStudySession(root: HTMLElement): Promise<void> {
     }
 
     currentId = null;
+    currentWord = null;
     if (queue.length === 0) {
       finish();
       return;
@@ -668,9 +690,7 @@ async function runStudySession(root: HTMLElement): Promise<void> {
   };
 
   revealButton.addEventListener('click', () => {
-    setRevealed(true);
-    card.focus();
-    updateProgress();
+    reveal();
   });
 
   for (const button of gradeGroup.querySelectorAll<HTMLButtonElement>('.grade-button')) {
@@ -689,9 +709,7 @@ async function runStudySession(root: HTMLElement): Promise<void> {
     if (!revealed) {
       if (event.key === ' ' || event.key === 'Enter') {
         event.preventDefault();
-        setRevealed(true);
-        card.focus();
-        updateProgress();
+        reveal();
       }
       return;
     }

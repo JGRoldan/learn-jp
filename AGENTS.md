@@ -449,7 +449,8 @@ Two independent flows:
 
 Session rules:
 
-- Card front: the word with furigana; reveal to show the meaning and
+- Card front: the plain word without furigana or readings; reveal to
+  show the word with furigana (when available), its meaning and
   examples.
 - Grades: 0 (Again), 3 (Good), 5 (Easy); keyboard shortcuts 1/2/3.
 - "Again" requeues the card at the end of the session (max once); if

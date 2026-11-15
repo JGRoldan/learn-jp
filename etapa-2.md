@@ -217,8 +217,9 @@ en cada "Bien" (q=3 → EF−0.14) y no conviene con solo 3 botones.
 ### `/estudiar/sesion?modo=repaso|nuevas&categoria=<id>&limite=<n>`
 
 - Query validado con Zod en servidor.
-- Frente: palabra con furigana (reutiliza `RubySegments`/`RubyText`).
-- Revelar (Espacio/Enter) → significado + ejemplos.
+- Frente: palabra base sin furigana ni lecturas.
+- Revelar (Espacio/Enter) → palabra con furigana (reutiliza
+  `RubySegments`/`RubyText`), significado + ejemplos.
 - Botones: Otra vez (1) / Bien (2) / Fácil (3).
 - Progreso x/y y pantalla final.
 - Móvil: botones grandes; teclado: foco gestionado y `aria-live`
