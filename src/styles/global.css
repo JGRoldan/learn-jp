@@ -234,12 +234,11 @@ html.hide-furigana .examples .reading-line {
 }
 
 /*
- * El script de filtrado oculta cada <details class="vocabulary-item">
- * con [hidden], pero el ítem real del flex es el <li> que lo envuelve.
- * Sin esta regla el <li> vacío seguiría en flujo y conservaría su hueco
- * de gap, dejando espacio muerto antes de los resultados filtrados.
+ * El filtrado oculta el <li> completo para que no conserve el hueco del
+ * gap del flex. Se evita `:has()` porque invalidar 1600 filas encarece
+ * cada cambio de filtro.
  */
-.vocabulary-list > li:has(> details[hidden]) {
+.vocabulary-list > li[hidden] {
   display: none;
 }
 

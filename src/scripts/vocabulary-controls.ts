@@ -26,6 +26,29 @@ import {
 const FURIGANA_STORAGE_KEY = 'jp-study:furigana';
 const SEARCH_DEBOUNCE_MS = 150;
 
+/**
+ * Datos de una fila cacheados al inicializar los controles.
+ *
+ * Evita repetir `closest` y lecturas de `dataset` en cada cambio de
+ * filtro. La normalización de búsqueda se calcula al primer uso para
+ * no penalizar los cambios de categoría.
+ */
+interface VocabularyControlItem {
+  readonly details: HTMLDetailsElement;
+  readonly listItem: HTMLLIElement;
+  readonly word: string;
+  readonly reading: string;
+  readonly meaning: string;
+  readonly categoryId: string;
+  searchFields: VocabularySearchFields | null;
+}
+
+interface VocabularySearchFields {
+  readonly word: string;
+  readonly reading: string;
+  readonly meaning: string;
+}
+
 /** Normaliza texto para búsqueda: sin espacios, minúsculas y sin diacríticos. */
 function normalizeForSearch(value: string): string {
   return value
@@ -96,27 +119,60 @@ function initSearchAndFilters(): void {
 
   applyLocalLearnedState(items);
 
-  let visibleLimit = VOCABULARY_PAGE_SIZE;
-  let matchingItems: HTMLDetailsElement[] = [];
+  const indexedItems = Array.from(items).flatMap((details) => {
+    const listItem = details.closest('li');
+    if (!(listItem instanceof HTMLLIElement)) return [];
 
-  const matchesQuery = (item: HTMLDetailsElement, query: string): boolean => {
+    return [
+      {
+        details,
+        listItem,
+        word: details.dataset.word ?? '',
+        reading: details.dataset.reading ?? '',
+        meaning: details.dataset.meaning ?? '',
+        categoryId: details.dataset.categoryId ?? '',
+        searchFields: null,
+      } satisfies VocabularyControlItem,
+    ];
+  });
+
+  let visibleLimit = VOCABULARY_PAGE_SIZE;
+  let matchingItems: VocabularyControlItem[] = [];
+  let visibleItems: VocabularyControlItem[] = indexedItems.filter((item) =>
+    item.listItem.classList.contains('is-visible'),
+  );
+
+  const matchesQuery = (item: VocabularyControlItem, query: string): boolean => {
     if (query === '') return true;
-    const word = normalizeForSearch(item.dataset.word ?? '');
-    const reading = normalizeForSearch(item.dataset.reading ?? '');
-    const meaning = normalizeForSearch(item.dataset.meaning ?? '');
-    return word.includes(query) || reading.includes(query) || meaning.includes(query);
+
+    item.searchFields ??= {
+      word: normalizeForSearch(item.word),
+      reading: normalizeForSearch(item.reading),
+      meaning: normalizeForSearch(item.meaning),
+    };
+
+    return (
+      item.searchFields.word.includes(query) ||
+      item.searchFields.reading.includes(query) ||
+      item.searchFields.meaning.includes(query)
+    );
   };
 
   /**
    * Aplica el límite de filas visibles sobre las coincidencias actuales.
-   * Las filas se ocultan con una clase en el <li>; el filtro usa `hidden`
-   * en el <details>. Al terminar, oculta el botón y conserva el foco.
+   * Solo toca las filas que estaban visibles y las que pasan a estarlo;
+   * nunca recorre las 1600 filas para cambiar clases.
    */
   const updateChunk = (): void => {
     const shown = Math.min(visibleLimit, matchingItems.length);
 
-    for (const [index, item] of matchingItems.entries()) {
-      item.closest('li')?.classList.toggle('is-visible', index < shown);
+    for (const item of visibleItems) {
+      item.listItem.classList.remove('is-visible');
+    }
+
+    visibleItems = matchingItems.slice(0, shown);
+    for (const item of visibleItems) {
+      item.listItem.classList.add('is-visible');
     }
 
     resultCount.textContent = formatVisibleCount(shown, matchingItems.length);
@@ -130,7 +186,7 @@ function initSearchAndFilters(): void {
     const hadFocus = document.activeElement === loadMore;
     loadMore.hidden = true;
     if (hadFocus) {
-      const lastSummary = matchingItems.at(-1)?.querySelector('summary');
+      const lastSummary = matchingItems.at(-1)?.details.querySelector('summary');
       if (lastSummary instanceof HTMLElement) lastSummary.focus();
     }
   };
@@ -139,16 +195,18 @@ function initSearchAndFilters(): void {
     const query = normalizeForSearch(searchInput.value);
     const category = categorySelect.value;
     const learned = learnedSelect.value;
+    const learnedValue = learned === 'learned' ? 'true' : 'false';
     matchingItems = [];
 
-    for (const item of items) {
-      const matchesCategory =
-        category === 'all' || item.dataset.categoryId === category;
+    for (const item of indexedItems) {
+      const matchesCategory = category === 'all' || item.categoryId === category;
       const matchesLearned =
-        learned === 'all' || item.dataset.learned === (learned === 'learned' ? 'true' : 'false');
+        learned === 'all' || item.details.dataset.learned === learnedValue;
       const matches = matchesCategory && matchesLearned && matchesQuery(item, query);
 
-      item.hidden = !matches;
+      if (item.listItem.hidden === matches) {
+        item.listItem.hidden = !matches;
+      }
       if (matches) matchingItems.push(item);
     }
 
