@@ -1,0 +1,48 @@
+---
+import {
+  formatVisibleCount,
+  getInitialVisibleCount,
+} from '../../features/vocabulary/pagination';
+
+interface Props {
+  readonly topics: readonly string[];
+  readonly levels: readonly string[];
+  readonly initialCount: number;
+}
+
+const { topics, levels, initialCount } = Astro.props;
+const initialVisibleCount = getInitialVisibleCount(initialCount);
+---
+
+<div class="filters">
+  <div class="field field-grow">
+    <label for="conversation-search-input">Buscar</label>
+    <input
+      id="conversation-search-input"
+      type="search"
+      placeholder="Título, tema, japonés o traducción"
+      autocomplete="off"
+      spellcheck="false"
+    />
+  </div>
+
+  <div class="field">
+    <label for="conversation-topic-select">Tema</label>
+    <select id="conversation-topic-select">
+      <option value="all">Todos</option>
+      {topics.map((topic) => <option value={topic}>{topic}</option>)}
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="conversation-level-select">Nivel</label>
+    <select id="conversation-level-select">
+      <option value="all">Todos</option>
+      {levels.map((level) => <option value={level}>{level}</option>)}
+    </select>
+  </div>
+
+  <p class="result-count" id="conversation-result-count" aria-live="polite">
+    {formatVisibleCount(initialVisibleCount, initialCount)}
+  </p>
+</div>

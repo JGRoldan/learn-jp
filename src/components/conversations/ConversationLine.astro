@@ -1,0 +1,35 @@
+---
+import RubySegments from '../vocabulary/RubySegments.astro';
+import type { ConversationLine } from '../../features/conversations/conversation.types';
+
+interface Props {
+  readonly line: ConversationLine;
+}
+
+const { line } = Astro.props;
+---
+
+<li class="conversation-line">
+  <div class="line-japanese" lang="ja">
+    <span class="line-speaker">
+      {line.speaker.segments !== null ? (
+        <RubySegments segments={line.speaker.segments} />
+      ) : (
+        line.speaker.text
+      )}：
+    </span>
+    <span class="line-text">
+      {line.japanese.segments !== null ? (
+        <RubySegments segments={line.japanese.segments} />
+      ) : (
+        line.japanese.text
+      )}
+    </span>
+  </div>
+  {line.translation !== null && (
+    <p class="line-translation">{line.translation}</p>
+  )}
+  {line.note !== null && (
+    <p class="line-note">{line.note}</p>
+  )}
+</li>

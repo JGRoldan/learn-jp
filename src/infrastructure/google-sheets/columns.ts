@@ -75,6 +75,24 @@ export const CATEGORIES_COLUMN_MAP = {
 } as const satisfies Record<string, string | ColumnSpec>;
 
 /**
+ * Mapeo entre campo canónico y nombre de columna esperado en la pestaña
+ * "conversaciones".
+ *
+ * - `id`, `titulo` y `guion` son obligatorios.
+ * - `topico` y `nivel` son opcionales para tolerar conversaciones aún sin
+ *   clasificar; el filtro deriva sus opciones de los valores presentes.
+ * - `guion` es una celda multilínea con etapas `@Nombre` y turnos
+ *   `hablante|japonés|traducción|nota`.
+ */
+export const CONVERSATIONS_COLUMN_MAP = {
+  id: 'id',
+  titulo: 'titulo',
+  topico: { header: 'topico', optional: true },
+  guion: 'guion',
+  nivel: { header: 'nivel', optional: true },
+} as const satisfies Record<string, string | ColumnSpec>;
+
+/**
  * Error lanzado cuando al header de la hoja le faltan columnas esperadas.
  * Indica un desajuste entre la estructura real de la hoja y el mapeo.
  */

@@ -10,6 +10,7 @@ const { title = 'Japanese Memo' } = Astro.props;
 
 const pathname = Astro.url.pathname;
 const isVocabulary = pathname === '/';
+const isConversations = pathname === '/conversaciones';
 const isStudy = pathname === '/estudiar' || pathname.startsWith('/estudiar/');
 ---
 
@@ -47,6 +48,13 @@ const isStudy = pathname === '/estudiar' || pathname.startsWith('/estudiar/');
             aria-current={isVocabulary ? 'page' : undefined}
           >
             Vocabulario
+          </a>
+          <a
+            class="site-nav-link"
+            href="/conversaciones"
+            aria-current={isConversations ? 'page' : undefined}
+          >
+            Conversaciones
           </a>
           <a
             class="site-nav-link"

@@ -1,0 +1,17 @@
+---
+import ConversationLine from './ConversationLine.astro';
+import type { ConversationStage } from '../../features/conversations/conversation.types';
+
+interface Props {
+  readonly stage: ConversationStage;
+}
+
+const { stage } = Astro.props;
+---
+
+<section class="conversation-stage">
+  <h3 class="stage-title">{stage.name}</h3>
+  <ol class="conversation-lines">
+    {stage.lines.map((line) => <ConversationLine line={line} />)}
+  </ol>
+</section>

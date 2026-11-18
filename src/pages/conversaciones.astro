@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ErrorMessage from '../components/ui/ErrorMessage.astro';
+import ConversationFilters from '../components/conversations/ConversationFilters.astro';
+import ConversationList from '../components/conversations/ConversationList.astro';
+import { loadConversations } from '../features/conversations/conversation.service';
+
+const result = await loadConversations();
+---
+
+<BaseLayout title="Conversaciones — Japanese Memo">
+  {
+    result.ok ? (
+      <>
+        <ConversationFilters
+          topics={result.topics}
+          levels={result.levels}
+          initialCount={result.entries.length}
+        />
+        {result.invalidRowCount > 0 && (
+          <p class="invalid-rows-note">
+            {result.invalidRowCount === 1
+              ? 'Hay 1 fila del guion con datos inválidos que fue ignorada. Revisa la consola del servidor para verla.'
+              : `Hay ${result.invalidRowCount} filas del guion con datos inválidos que fueron ignoradas. Revisa la consola del servidor para verlas.`}
+          </p>
+        )}
+        <ConversationList entries={result.entries} />
+      </>
+    ) : (
+      <ErrorMessage message={result.message} />
+    )
+  }
+</BaseLayout>
+
+<script>
+  import { initConversationControls } from '../scripts/conversation-controls';
+  initConversationControls();
+</script>

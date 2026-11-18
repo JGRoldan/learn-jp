@@ -1,0 +1,40 @@
+---
+import ConversationStage from './ConversationStage.astro';
+import type { ConversationEntry } from '../../features/conversations/conversation.types';
+
+interface Props {
+  readonly entry: ConversationEntry;
+}
+
+const { entry } = Astro.props;
+---
+
+<details
+  class="conversation-item"
+  name="conversation"
+  data-id={entry.id}
+  data-topic={entry.topico ?? ''}
+  data-level={entry.nivel ?? ''}
+  data-search-title={entry.searchTitle}
+  data-search-topic={entry.searchTopic}
+  data-search-level={entry.searchLevel}
+  data-search-text={entry.searchText}
+  data-search-reading={entry.searchReading}
+  data-search-meaning={entry.searchMeaning}
+>
+  <summary>
+    <span class="conversation-title">{entry.titulo}</span>
+    <span class="conversation-meta">
+      {entry.topico !== null && (
+        <span class="chip">{entry.topico}</span>
+      )}
+      {entry.nivel !== null && (
+        <span class="chip chip-level">{entry.nivel}</span>
+      )}
+    </span>
+  </summary>
+
+  <div class="conversation-body">
+    {entry.stages.map((stage) => <ConversationStage stage={stage} />)}
+  </div>
+</details>

@@ -1,0 +1,31 @@
+---
+import { VOCABULARY_PAGE_SIZE } from '../../features/vocabulary/pagination';
+import type { ConversationEntry } from '../../features/conversations/conversation.types';
+import ConversationItem from './ConversationItem.astro';
+
+interface Props {
+  readonly entries: readonly ConversationEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ul class="conversation-list" id="conversation-list">
+  {entries.map((entry, index) => (
+    <li class={index < VOCABULARY_PAGE_SIZE ? 'is-visible' : undefined}>
+      <ConversationItem entry={entry} />
+    </li>
+  ))}
+</ul>
+<button
+  class="load-more"
+  id="conversation-load-more"
+  type="button"
+  aria-controls="conversation-list"
+  hidden
+>
+  Cargar más
+</button>
+<p class="no-results" id="conversation-no-results" hidden>
+  No hay conversaciones con la búsqueda o los filtros actuales.
+</p>

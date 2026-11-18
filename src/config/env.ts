@@ -8,11 +8,13 @@ import { z } from 'zod';
  *   `/d/e/` y `/pub` (empieza por `2PACX-`).
  * - `GOOGLE_SHEETS_WORDS_GID`: gid del tab de palabras.
  * - `GOOGLE_SHEETS_CATEGORIES_GID`: gid del tab de categorías.
+ * - `GOOGLE_SHEETS_CONVERSATIONS_GID`: gid del tab de conversaciones.
  */
 export interface AppEnv {
   readonly publishedId: string;
   readonly wordsGid: string;
   readonly categoriesGid: string;
+  readonly conversationsGid: string;
 }
 
 /** Error de configuración: falta una variable o tiene formato inválido. */
@@ -36,6 +38,10 @@ const envSchema = z.object({
     .string({ error: 'Falta GOOGLE_SHEETS_CATEGORIES_GID.' })
     .trim()
     .regex(/^\d+$/, 'GOOGLE_SHEETS_CATEGORIES_GID debe ser un gid numérico.'),
+  GOOGLE_SHEETS_CONVERSATIONS_GID: z
+    .string({ error: 'Falta GOOGLE_SHEETS_CONVERSATIONS_GID.' })
+    .trim()
+    .regex(/^\d+$/, 'GOOGLE_SHEETS_CONVERSATIONS_GID debe ser un gid numérico.'),
 });
 
 /**
@@ -73,6 +79,7 @@ export function getEnv(): AppEnv {
     GOOGLE_SHEETS_PUBLISHED_ID: readRawEnv('GOOGLE_SHEETS_PUBLISHED_ID'),
     GOOGLE_SHEETS_WORDS_GID: readRawEnv('GOOGLE_SHEETS_WORDS_GID'),
     GOOGLE_SHEETS_CATEGORIES_GID: readRawEnv('GOOGLE_SHEETS_CATEGORIES_GID'),
+    GOOGLE_SHEETS_CONVERSATIONS_GID: readRawEnv('GOOGLE_SHEETS_CONVERSATIONS_GID'),
   });
 
   if (!parsed.success) {
@@ -88,6 +95,7 @@ export function getEnv(): AppEnv {
     publishedId: parsed.data.GOOGLE_SHEETS_PUBLISHED_ID,
     wordsGid: parsed.data.GOOGLE_SHEETS_WORDS_GID,
     categoriesGid: parsed.data.GOOGLE_SHEETS_CATEGORIES_GID,
+    conversationsGid: parsed.data.GOOGLE_SHEETS_CONVERSATIONS_GID,
   };
   return cachedEnv;
 }
